@@ -31,7 +31,7 @@ public:
         int repair_Cost = stoi(repairCost);
     }
     void displayClientData() const {
-        cout << "Id: " << id << "\nИмя:" << name << "\nУстройство:" << device << "\nСтоимость ремонта: " << repair_Cost << endl;
+        cout << "Id: " << id << "\nИмя: " << name << "\nФамилия: " << surname << "\nУстройство: " << device << "\nСтоимость ремонта: " << repair_Cost << endl;
     }
 };
 
@@ -45,10 +45,11 @@ public:
         cout << "===== Меню =====\n";
         cout << "1. Добавить клиента\n";
         cout << "2. Просмотреть список клиентов\n";
-        cout << "3. Сортировка по имени (А->Я)\n";
+        cout << "3. Сортировка по имени\n";
         cout << "4. Сортировка по устройству\n";
         cout << "5. Сортировка по стоимости ремонта\n";
-        cout << "6. Выход\n";
+        cout << "6. Заказ готов (удалить заявку)\n";
+        cout << "7. Выход\n";
     }
     void addClient() {
         loadFromFile();
@@ -300,13 +301,45 @@ public:
         }
     }
 
+    void DeleteTask() {
+        loadFromFile();
+        system("cls");
+        cout << "Введите id заказа для удаления: ";
+        fstream file("Orders.txt", ios::in | ios::out);
+        ofstream tempFile("temp.txt");
+
+        string choice_string;
+
+        cin >> choice_string;
+
+        string line;
+        for (auto& client : clients) {
+            if (client.id == choice_string) {
+                string lineToDelete = client.id + "," + client.name + "," + client.surname + "," + client.device + "," + client.repairCost;
+                while (getline(file, line))
+                {
+                    if (line != lineToDelete)
+                    {
+                        tempFile << line << endl;
+                    }
+                }
+            }
+        }
+
+        file.close();
+        tempFile.close();
+        remove("Orders.txt");
+        rename("temp.txt", "Orders.txt");
+        cout << "Удаление завершено успешно!\n";
+    }
+
     void saveToFile() const {
         string filename = "Orders.txt";
 
         ofstream file(filename);
         if (file.is_open()) {
             for (auto& client : clients) {
-                file << client.id << ", " << client.name << ", " << client.surname << ", " << client.device << ", " << client.repairCost << "\n";
+                file << client.id << "," << client.name << "," << client.surname << "," << client.device << "," << client.repairCost << "\n";
             }
             cout << "Данные сохранены в файл.\n";
         }
@@ -408,6 +441,9 @@ int main() {
                 }
                 break;
             case 6:
+                system_.DeleteTask();
+                break;
+            case 7:
                 cout << "Выход.\n";
                 menuBool = false;
                 break;
@@ -418,7 +454,7 @@ int main() {
             }
         }
         catch (invalid_argument&) {
-            cout << "Вы ввели строку. Требуется числовой формат. Повторите попытку" << endl;
+            cout << "Некоректный формат ввода. Требуется числовой формат. Повторите попытку" << endl;
             counter++;
         }
     }
