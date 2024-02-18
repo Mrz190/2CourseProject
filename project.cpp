@@ -48,7 +48,8 @@ public:
         cout << "3. Сортировка по имени (А->Я)\n";
         cout << "4. Сортировка по устройству\n";
         cout << "5. Сортировка по стоимости ремонта\n";
-        cout << "6. Выход\n";
+        cout << "6. Заказ готов (удалить заявку)\n";
+        cout << "7. Выход\n";
     }
     void addClient() {
         loadFromFile();
@@ -301,7 +302,7 @@ public:
     }
 
     void DeleteTask() {
-
+        cout << "Deleting...";
     }
 
     void saveToFile() const {
@@ -412,6 +413,9 @@ int main() {
                 }
                 break;
             case 6:
+                system_.DeleteTask();
+                break;
+            case 7:
                 cout << "Выход.\n";
                 menuBool = false;
                 break;
