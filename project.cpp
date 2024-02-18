@@ -300,6 +300,10 @@ public:
         }
     }
 
+    void DeleteTask() {
+
+    }
+
     void saveToFile() const {
         string filename = "Orders.txt";
 
