@@ -31,7 +31,7 @@ public:
         int repair_Cost = stoi(repairCost);
     }
     void displayClientData() const {
-        cout << "Id: " << id << "\nИмя:" << name << "\nУстройство:" << device << "\nСтоимость ремонта: " << repair_Cost << endl;
+        cout << "Id: " << id << "\nИмя: " << name << "\nФамилия: " << surname << "\nУстройство: " << device << "\nСтоимость ремонта: " << repair_Cost << endl;
     }
 };
 
@@ -302,7 +302,35 @@ public:
     }
 
     void DeleteTask() {
-        cout << "Deleting...";
+        loadFromFile();
+        system("cls");
+        cout << "Введите id заказа для удаления: ";
+        fstream file("Orders.txt", ios::in | ios::out);
+        ofstream tempFile("temp.txt");
+
+        string choice_string;
+
+        cin >> choice_string;
+
+        string line;
+        for (auto& client : clients) {
+            if (client.id == choice_string) {
+                string lineToDelete = client.id + "," + client.name + "," + client.surname + "," + client.device + "," + client.repairCost;
+                while (getline(file, line))
+                {
+                    if (line != lineToDelete)
+                    {
+                        tempFile << line << endl;
+                    }
+                }
+            }
+        }
+
+        file.close();
+        tempFile.close();
+        remove("Orders.txt");
+        rename("temp.txt", "Orders.txt");
+        cout << "Удаление завершено успешно!\n";
     }
 
     void saveToFile() const {
@@ -311,7 +339,7 @@ public:
         ofstream file(filename);
         if (file.is_open()) {
             for (auto& client : clients) {
-                file << client.id << ", " << client.name << ", " << client.surname << ", " << client.device << ", " << client.repairCost << "\n";
+                file << client.id << "," << client.name << "," << client.surname << "," << client.device << "," << client.repairCost << "\n";
             }
             cout << "Данные сохранены в файл.\n";
         }
